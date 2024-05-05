@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Encryption</title>
+</head>
+<body>
+    <h1>File Encryption</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="file">Select File:</label>
+        <input type="file" id="file" name="file" required><br><br>
+        
+        <label for="key">Encryption Key:</label>
+        <input type="text" id="key" name="key" required><br><br>
+        
+        <label for="keySize">Key Size:</label>
+        <select id="keySize" name="keySize" required>
+            <option value="128">128</option>
+            <option value="192">192</option>
+            <option value="256">256</option>
+        </select><br><br>
+        
+        <label for="action">Action:</label>
+        <select id="action" name="action" required>
+            <option value="encrypt">Encrypt</option>
+            <option value="decrypt">Decrypt</option>
+        </select><br><br>
+        
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var formData = new FormData();
+            formData.append('file', document.getElementById('file').files[0]);
+            formData.append('key', document.getElementById('key').value);
+            formData.append('keySize', document.getElementById('keySize').value);
+            formData.append('action', document.getElementById('action').value);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').innerHTML = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
